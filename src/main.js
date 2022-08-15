@@ -7,6 +7,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import '@/styles/index.scss' // global css
 
+// import components from '@/components' // 引入组件
+// Vue.use(components) // 注册组件 会执行install的方法
+
 import App from './App'
 import store from './store'
 import router from './router'
