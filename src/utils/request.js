@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { Message } from 'element-ui'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url 环境变量
@@ -7,6 +7,19 @@ const service = axios.create({
 })
 
 service.interceptors.request.use()
-service.interceptors.response.use()
+service.interceptors.response.use((response) => {
+  const { success, message, data } = response.data
+  if (success) {
+    console.log(data)
+    return data
+  } else {
+    Message.error(message)
+    return Promise.reject(new Error(message))
+  }
+}, (err) => {
+  Message.error(err.message || '')
+  return Promise.reject(err)
+}
+)
 
 export default service

@@ -1,26 +1,17 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="rules" class="login-form" auto-complete="on" label-position="left">
 
+      <!-- 放置标题图片 @是设置的别名-->
       <div class="title-container">
         <h3 class="title">
           <img src="@/assets/common/login-logo.png" alt="">
         </h3>
       </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+      <!-- input输入框 -->
+      <el-form-item prop="mobile">
+        <span class="svg-container el-icon-user-solid" />
+        <el-input v-model="loginForm.mobile" placeholder="请输入手机号" />
       </el-form-item>
 
       <el-form-item prop="password">
@@ -28,22 +19,25 @@
           <svg-icon icon-class="password" />
         </span>
         <el-input
-          :key="passwordType"
-          ref="password"
+          ref="pwdInput"
           v-model="loginForm.password"
+          placeholder="请输入密码"
+
           :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
         />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+        <span class="svg-container">
+          <svg-icon
+            :icon-class=" passwordType === 'password' ? 'eye' : 'eye-open' "
+            @click="changePwd"
+          />
         </span>
       </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="loginBtn" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        class="loginBtn"
+        @click="login"
+      >Login</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">账号: 13800000002</span>
@@ -55,73 +49,66 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+// import { validMobile } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
+    // const seTvalidMobile = (rule, value, callback) => {
+    //   if (validMobile(value)) {
+    //     return callback()
+    //   }
+    //   return callback(new Error('手机格式不正确'))
+    // }
     return {
-      loginForm: {
-        username: 'admin',
-        password: '111111'
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
-      loading: false,
       passwordType: 'password',
-      redirect: undefined
-    }
-  },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+      loginForm: {
+        mobile: '13800000002',
+        password: '123456'
       },
-      immediate: true
+      // 表单校验规则
+      rules: {
+        mobile: [
+          { required: true, message: '请填写手机号', trigger: 'blur' },
+          {
+            pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/,
+            message: '手机号码格式不正确'
+          }
+          // { validator: seTvalidMobile, trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请填写密码', trigger: 'blur' },
+          {	min: 6, max: 16, message: '密码的长度在6-16位之间 ', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
+    // 切换密码框的type值
+    // 眼睛要修改
+    // 输入框focus
+    changePwd() {
+      this.passwordType === 'password'
+        ? this.passwordType = '' : this.passwordType = 'password'
+
+      // 输入框focus
       this.$nextTick(() => {
-        this.$refs.password.focus()
+        this.$refs.pwdInput.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    // 表单提交
+    async login() {
+      try {
+        await this.$refs.loginForm.validate()
+        // 通过登录接口 把数据提供给后端
+        await this.$store.dispatch('user/login', this.loginForm)
+
+        // 页面跳转
+        this.$router.push('/')
+        // console.log(res)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
