@@ -1,5 +1,5 @@
-import testIndex from './testIndex'
-import testIndex2 from './testIndex2'
+// import testIndex from './testIndex'
+// import testIndex2 from './testIndex2'
 
 // const com = [testIndex, testIndex2]
 
@@ -18,7 +18,7 @@ import testIndex2 from './testIndex2'
 //   Vue.component('testIndex2', testIndex2)
 // }
 
-//3.
+// 3.
 // export default (Vue) => {
 //   com.forEach(ele => {
 //     Vue.component(ele.name, ele)
