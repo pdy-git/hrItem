@@ -2,6 +2,9 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+// import { getTimeStamp } from '@/utils/auth'
+
+// const TimeOut = 2 // 定义超时时间
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url 环境变量
@@ -35,4 +38,11 @@ service.interceptors.response.use((response) => {
 }
 )
 
+// 是否超时
+// (当前时间 - 缓存中的时间） 是否大于 时间差
+// function IsCheckTimeOut() {
+//   var currentTime = Date.now() // 当前时间戳
+//   var timeStamp = getTimeStamp() // 缓存时间戳
+//   return (currentTime - timeStamp) / 1000 > TimeOut
+// }
 export default service
