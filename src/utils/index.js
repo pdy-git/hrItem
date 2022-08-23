@@ -115,3 +115,20 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// 根据父亲的名字找儿子 ， 在根据儿子的名字找孙子
+
+export function tranListToTreeData(list, rootValue) {
+  const arr = []
+  list.forEach((ele) => {
+    if (ele.pid === rootValue) {
+      const children = tranListToTreeData(list, ele.id)
+      if (children.length) {
+        ele.children = children
+      }
+      arr.push(ele)
+    }
+  })
+  return arr
+}
+
