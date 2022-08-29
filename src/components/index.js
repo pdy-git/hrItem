@@ -1,26 +1,16 @@
-// import testIndex from './testIndex'
-// import testIndex2 from './testIndex2'
+// import PageTools from './PageTools'
 
-// const com = [testIndex, testIndex2]
-
-// 1.
-// export default {
-// install: (Vue) => {
-//   Vue.component('testIndex', testIndex)
-//   Vue.component('testIndex2', testIndex2)
-// }
-// }
-
-// 2.
-// vue.use(函数)
 // export default (Vue) => {
-//   Vue.component('testIndex', testIndex)
-//   Vue.component('testIndex2', testIndex2)
+//   Vue.component('PageTools', PageTools)
 // }
 
-// 3.
-// export default (Vue) => {
-//   com.forEach(ele => {
-//     Vue.component(ele.name, ele)
-//   })
-// }
+// 自动批量注册组件
+const requireComponent = require.context('./', true, /\.vue$/)
+const list = requireComponent.keys().map(ele => requireComponent(ele))
+console.log(requireComponent)
+
+export default (Vue) => {
+  list.forEach((ele) => {
+    Vue.component(ele.default.name, ele.default)
+  })
+}

@@ -31,9 +31,16 @@
       :default-expand-all="true"
       :props="defaultProps"
     >
-      <tree-tools slot-scope="{data}" :tree-node="data" @addDept="addDept" />
+      <tree-tools
+        slot-scope="{data}"
+        :tree-node="data"
+        @addDept="addDept"
+        @editDept="editDept"
+        @refreshDepts="getDepartments"
+      />
     </el-tree>
     <add-dept
+      ref="addDept"
       :dialog-visible.sync="dialogVisible"
       :tree-node="currentNode"
       @refreshDepts="getDepartments"
@@ -84,9 +91,17 @@ export default {
     addDept(node) {
       this.currentNode = node // 保存当前节点
       this.dialogVisible = true // 弹窗显示出来
+    },
+    editDept(node) {
+      this.currentNode = node
+      this.dialogVisible = true
+      console.log(node)
+      console.log(this.$refs.addDept)
+      this.$refs.addDept.formData = { ...node }
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

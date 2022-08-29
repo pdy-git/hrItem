@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { delDepartments } from '@/api/departments'
 export default {
   name: 'Hrsaas1TreeTools',
   props: {
@@ -45,9 +46,21 @@ export default {
         // 传递当前节点
         this.$emit('addDept', this.treeNode)
       } else if (type === 'edit') {
-        //
+        // 编辑部门
+        this.$emit('editDept', this.treeNode)
       } else {
-        //
+        // 删除功能
+        this.$confirm('确认删除部门吗', '提示', { type: 'warning' })
+          .then(res => {
+            // await delDepartments(this.treeNode.id)
+            // this.$emit('refreshDepts')
+            // this.$message.success('删除成功')
+
+            return delDepartments(this.treeNode.id)
+          }).then(res => {
+            this.$emit('refreshDepts')
+            this.$message.success('删除成功')
+          })
       }
     }
   }

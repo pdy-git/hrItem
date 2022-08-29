@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
+    <PageTools />
+
   </div>
 </template>
 
@@ -33,8 +35,9 @@ export default {
     ...mapGetters([
       'name'
     ])
+  },
+  mounted() {
   }
-
 }
 </script>
 

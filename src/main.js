@@ -22,10 +22,18 @@ import * as directives from '@/directives'
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
-
+// 全局注册组件
+import components from '@/components'
+Vue.use(components)
 Vue.use(ElementUI)
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
+
+import * as filters from '@/directives/filters'
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 Vue.config.productionTip = false
 
