@@ -44,7 +44,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="editRole(row.id)">角色</el-button>
             <el-button type="text" size="small" @click="del(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -76,7 +76,8 @@
     >
       <canvas id="canvas" />
     </el-dialog>
-
+    <!-- 放置分配组件 -->
+    <assignRole ref="AssignRole" :show-role-dialog.sync="showRoleDialog" :user-id="userId" />
   </div>
 </template>
 
@@ -86,11 +87,13 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import { formatDate } from '@/directives/filters'
 import QrCode from 'qrcode'
+import assignRole from './components/assign-role.vue'
 export default {
 
   name: 'Hrsaas1Index',
   components: {
-    AddDemployee
+    AddDemployee,
+    assignRole
   },
 
   data() {
@@ -104,7 +107,9 @@ export default {
       list: [],
       total: 0, // 总数
       visibleDialog: false,
-      ercodeDialog: false
+      ercodeDialog: false,
+      showRoleDialog: false, // 弹出层
+      userId: null
     }
   },
 
@@ -203,6 +208,11 @@ export default {
       await this.$nextTick()
       const dom = document.querySelector('#canvas')
       QrCode.toCanvas(dom, staffPhoto)
+    },
+    editRole(id) {
+      this.userId = id
+      this.showRoleDialog = true
+      this.$refs.AssignRole.getUserDetailById(id)
     }
 
   }

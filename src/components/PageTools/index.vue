@@ -29,6 +29,10 @@ export default {
           return true
         }
         return false
+      },
+      showBefore: {
+        type: Boolean,
+        default: true
       }
 
     }
