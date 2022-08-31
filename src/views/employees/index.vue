@@ -12,8 +12,18 @@
     <el-card>
       <el-table v-loading="loading" border :data="list">
         <el-table-column label="序号" sortable="" width="80" type="index" />
-        <el-table-column label="序号" sortable="" type="index" />
         <el-table-column label="姓名" sortable="" prop="username" />
+        <el-table-column label="图像">
+          <template slot-scope="{row}">
+            <img
+              v-imgerror="require('@/assets/common/bigUserHeader.png')"
+              :src="row.staffPhoto"
+              style="border-radius: 50%; width: 100px; height: 100px; padding: 10px;"
+              alt=""
+              @click="showErCodeDialog(row.staffPhoto)"
+            >
+          </template>
+        </el-table-column>
         <el-table-column label="工号" sortable="" prop="workNumber" />
         <el-table-column
           label="聘用形式"
@@ -58,6 +68,15 @@
       :visible-dialog.sync="visibleDialog"
       @refresh="getEmployeeList"
     />
+    <!-- 二维码 -->
+    <el-dialog
+      title="二维码"
+      :visible.sync="ercodeDialog"
+      custom-class="canvaseq"
+    >
+      <canvas id="canvas" />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -66,6 +85,7 @@ import AddDemployee from './components/add-employee.vue'
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import { formatDate } from '@/directives/filters'
+import QrCode from 'qrcode'
 export default {
 
   name: 'Hrsaas1Index',
@@ -75,6 +95,7 @@ export default {
 
   data() {
     return {
+
       page: {
         page: 1, // 当前页码
         size: 10
@@ -82,7 +103,8 @@ export default {
       loading: false,
       list: [],
       total: 0, // 总数
-      visibleDialog: false
+      visibleDialog: false,
+      ercodeDialog: false
     }
   },
 
@@ -171,12 +193,25 @@ export default {
           }
         )
       })
+    },
+    async showErCodeDialog(staffPhoto) {
+      console.log(111)
+      console.log(staffPhoto)
+      // url存在的情况下 才弹出层
+      if (!staffPhoto) return this.$message.error('为设计图像')
+      this.ercodeDialog = true
+      await this.$nextTick()
+      const dom = document.querySelector('#canvas')
+      QrCode.toCanvas(dom, staffPhoto)
     }
 
   }
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss">
+.canvaseq .el-dialog__body {
+  text-align: center;
+}
 </style>
+

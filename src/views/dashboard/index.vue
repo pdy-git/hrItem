@@ -1,7 +1,8 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
-    <PageTools />
+
+    <ImageUpload @onSuccess="handleSuccess" />
 
   </div>
 </template>
@@ -37,6 +38,16 @@ export default {
     ])
   },
   mounted() {
+
+  },
+  methods: {
+    beforeUploadCheck(file) {
+      this.$message.error('图片大小最大不能超过5M')
+      return false
+    },
+    handleSuccess({ url }) {
+      console.log(url)
+    }
   }
 }
 </script>

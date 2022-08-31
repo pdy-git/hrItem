@@ -18,11 +18,9 @@
         </el-tab-pane>
         <el-tab-pane label="个人详情">
           <!-- 放置个人详情 -->
-          <component :is="userComponent" />
+          <component :is="userComponent" ref="userInfoRef" />
           <!-- <user-info /> -->
         </el-tab-pane>
-
-        <userComponent />
 
         <el-tab-pane label="岗位详情">
           <!-- 放置岗位详情 -->
@@ -51,7 +49,10 @@ export default {
         password2: ''
 
       },
-
+      components: {
+        userInfo,
+        jobInfo
+      },
       rules: {
         username: [{ required: true, message: '姓名必填', trigger: 'blur' }],
         password2: [{ required: true, message: '密码必填', trigger: 'blur' },
@@ -70,6 +71,8 @@ export default {
   methods: {
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.userId)
+      this.$refs.userInfoRef.userInfo = { ...this.userInfo }
+      this.$refs.userInfoRef.setImageUrl(this.userInfo.staffPhoto)
     },
     async updateInfo() {
       try {
@@ -80,6 +83,7 @@ export default {
         console.log(error)
       }
     }
+
   }
 }
 </script>

@@ -34,6 +34,8 @@ import * as filters from '@/directives/filters'
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+import Print from 'vue-print-nb'
+Vue.use(Print)
 
 Vue.config.productionTip = false
 
